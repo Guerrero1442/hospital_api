@@ -1,73 +1,118 @@
+using backend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
 
-namespace backend.Models
+
+
+
+public class HospitalContext : DbContext
 {
-	public class HospitalContext : DbContext
+	public DbSet<Usuario> Usuarios { get; set; }
+	public DbSet<Paciente> Pacientes { get; set; }
+
+	public DbSet<Administrador> Administradores { get; set; }
+	public DbSet<Medico> Medicos { get; set; }
+	public DbSet<Cita> Citas { get; set; }
+	public DbSet<Pago> Pagos { get; set; }
+
+
+	public HospitalContext(DbContextOptions<HospitalContext> options) : base(options)
 	{
-		public HospitalContext(DbContextOptions<HospitalContext> options) : base(options)
+	}
+
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.Entity<Usuario>(usuario =>
+		{
+			usuario.HasKey(p => p.Id);
+			usuario.Property(u => u.NombreUsuario).IsRequired();
+			usuario.Property(u => u.Email).IsRequired();
+			usuario.Property(u => u.Password).IsRequired();
+			usuario.Property(u => u.Rol).IsRequired();
+		});
+
+		modelBuilder.Entity<Paciente>(paciente =>
+		{
+			paciente.HasKey(p => p.Id);
+			paciente.Property(p => p.DocumentoIdentificacion).IsRequired();
+			paciente.Property(p => p.NombreCompleto).IsRequired();
+			paciente.Property(p => p.Telefono).IsRequired();
+			paciente.Property(p => p.Beneficiarios).IsRequired().HasConversion(new StringListConverter());
+			paciente.HasOne(p => p.Usuario).WithOne().HasForeignKey<Paciente>(p => p.UsuarioId);
+		});
+
+
+		modelBuilder.Entity<Medico>(medico =>
+		{
+			medico.HasKey(m => m.Id);
+			medico.Property(m => m.DocumentoIdentificacion).IsRequired();
+			medico.Property(m => m.NombreCompleto).IsRequired();
+			medico.Property(m => m.Telefono).IsRequired();
+			medico.Property(m => m.Especialidad).IsRequired();
+			medico.Property(m => m.Disponibilidad).IsRequired().HasConversion(new DateTimeListConverter());
+			medico.HasOne(m => m.Usuario).WithOne().HasForeignKey<Medico>(m => m.UsuarioId);
+
+
+		});
+
+		modelBuilder.Entity<Administrador>(administrador =>
+		{
+			administrador.HasKey(a => a.Id);
+			administrador.Property(a => a.NombreCompleto).IsRequired();
+			administrador.Property(a => a.Telefono).IsRequired();
+			administrador.Property(a => a.Direccion).IsRequired();
+			administrador.HasOne(a => a.Usuario).WithOne().HasForeignKey<Administrador>(a => a.UsuarioId);
+		});
+
+		modelBuilder.Entity<Cita>(cita =>
+		{
+			cita.HasKey(c => c.Id);
+			cita.Property(c => c.Id).ValueGeneratedOnAdd();
+			cita.Property(c => c.Fecha).IsRequired();
+			cita.Property(c => c.Paciente).IsRequired().HasConversion(paciente => JsonConvert.SerializeObject(paciente),
+	json => JsonConvert.DeserializeObject<Paciente>(json));
+			cita.Property(c => c.Medico).IsRequired().HasConversion(medico => JsonConvert.SerializeObject(medico),
+	json => JsonConvert.DeserializeObject<Medico>(json));
+			cita.Property(c => c.Especialidad).IsRequired();
+		});
+
+		modelBuilder.Entity<Pago>(pago =>
+		{
+			pago.HasKey(p => p.Id);
+			pago.Property(p => p.Id).ValueGeneratedOnAdd();
+			pago.Property(p => p.FechaPago).IsRequired();
+			pago.Property(p => p.Monto).IsRequired();
+			pago.Property(p => p.Paciente).IsRequired().HasConversion(paciente => JsonConvert.SerializeObject(paciente),
+	json => JsonConvert.DeserializeObject<Paciente>(json)); ;
+			pago.Property(p => p.Cita).IsRequired().HasConversion(cita => JsonConvert.SerializeObject(cita),
+	json => JsonConvert.DeserializeObject<Cita>(json)); ;
+		});
+
+	}
+
+	public class DateTimeListConverter : ValueConverter<List<DateTime>, string>
+	{
+		public DateTimeListConverter(ConverterMappingHints mappingHints = null)
+		    : base(
+			v => JsonConvert.SerializeObject(v),
+			v => JsonConvert.DeserializeObject<List<DateTime>>(v),
+			mappingHints)
 		{
 		}
+	}
 
-		public DbSet<Usuario> Usuarios { get; set; }
-		public DbSet<Paciente> Pacientes { get; set; }
-		public DbSet<Medico> Medicos { get; set; }
-		public DbSet<Cita> Citas { get; set; }
-		public DbSet<Pago> Pagos { get; set; }
-
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+	public class StringListConverter : ValueConverter<List<string>, string>
+	{
+		public StringListConverter(ConverterMappingHints mappingHints = null)
+		    : base(
+			  v => JsonConvert.SerializeObject(v),
+			  v => JsonConvert.DeserializeObject<List<string>>(v),
+			  mappingHints)
 		{
-			modelBuilder.Entity<Usuario>(usuario =>
-			{
-				usuario.HasKey(u => u.Id);
-				usuario.Property(u => u.Id).ValueGeneratedOnAdd();
-				usuario.Property(u => u.NombreUsuario).IsRequired();
-				usuario.Property(u => u.Email).IsRequired();
-				usuario.Property(u => u.Password).IsRequired();
-				usuario.Property(u => u.Rol).IsRequired();
-			});
-
-			modelBuilder.Entity<Paciente>(paciente =>
-			{
-				paciente.HasKey(p => p.Id);
-				paciente.Property(p => p.Id).ValueGeneratedOnAdd();
-				paciente.Property(p => p.DocumentoIdentificacion).IsRequired();
-				paciente.Property(p => p.NombreCompleto).IsRequired();
-				paciente.Property(p => p.Telefono).IsRequired();
-				paciente.Property(p => p.Beneficiarios).IsRequired();
-			});
-
-
-			modelBuilder.Entity<Medico>(medico =>
-			{
-				medico.HasKey(m => m.Id);
-				medico.Property(m => m.Id).ValueGeneratedOnAdd();
-				medico.Property(m => m.DocumentoIdentificacion).IsRequired();
-				medico.Property(m => m.NombreCompleto).IsRequired();
-				medico.Property(m => m.Telefono).IsRequired();
-				medico.Property(m => m.Especialidad).IsRequired();
-				medico.Property(m => m.Disponibilidad).IsRequired();
-			});
-
-			modelBuilder.Entity<Cita>(cita =>
-			{
-				cita.HasKey(c => c.Id);
-				cita.Property(c => c.Id).ValueGeneratedOnAdd();
-				cita.Property(c => c.Fecha).IsRequired();
-				cita.Property(c => c.Paciente).IsRequired();
-				cita.Property(c => c.Medico).IsRequired();
-				cita.Property(c => c.Especialidad).IsRequired();
-			});
-
-			modelBuilder.Entity<Pago>(pago =>
-			{
-				pago.HasKey(p => p.Id);
-				pago.Property(p => p.Id).ValueGeneratedOnAdd();
-				pago.Property(p => p.FechaPago).IsRequired();
-				pago.Property(p => p.Monto).IsRequired();
-				pago.Property(p => p.Paciente).IsRequired();
-				pago.Property(p => p.Cita).IsRequired();
-			});
-
 		}
 	}
 }
+
+

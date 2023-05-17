@@ -1,6 +1,6 @@
 namespace backend.Models;
 
-public class Pago
+public class Pago : ModelBase
 {
 	public int Id { get; set; }
 

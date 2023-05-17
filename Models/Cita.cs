@@ -1,6 +1,6 @@
 namespace backend.Models;
 
-public class Cita
+public class Cita : ModelBase
 {
 
 	public int Id { get; set; }

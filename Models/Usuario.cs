@@ -1,7 +1,7 @@
 namespace backend.Models;
 
 
-public class Usuario
+public class Usuario : ModelBase
 {
 	public int Id { get; set; }
 
@@ -11,33 +11,8 @@ public class Usuario
 
 	public string Password { get; set; }
 
-	public Rol Rol { get; set; } = Rol.Paciente;
+	public Rol Rol { get; set; }
 
-}
-
-
-public class Paciente : Usuario
-{
-	public string DocumentoIdentificacion { get; set; }
-
-	public string NombreCompleto { get; set; }
-
-	public int Telefono { get; set; }
-
-	public List<string> Beneficiarios { get; set; }
-}
-
-public class Medico : Usuario
-{
-	public string DocumentoIdentificacion { get; set; }
-
-	public string NombreCompleto { get; set; }
-
-	public int Telefono { get; set; }
-
-	public Especialidad Especialidad { get; set; }
-
-	public List<DateTime> Disponibilidad { get; set; }
 }
 
 public enum Rol
@@ -47,17 +22,3 @@ public enum Rol
 	Administrador
 }
 
-public enum Especialidad
-{
-	Cardiologia,
-	Dermatologia,
-	Gastroenterologia,
-	Ginecologia,
-	Neurologia,
-	Oftalmologia,
-	Oncologia,
-	Pediatria,
-	Psicologia,
-	Reumatologia,
-	Urologia
-}
