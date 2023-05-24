@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "G017AYIbAXtxt2zbDl4tdNnDl454uPbO/WnvjBc9WggCBDMsUarPl4P5K4Kp6YQS1rj2jwrGrWQ7lY+D8QZb1Q==",
+  "dgSpecHash": "C0mE4eac/U5v+AplrRa29rJoxQQhCgURLKHDOhM+kU0rpUQxmtIQZdOlIh4hLhzZffHBPA/fk4bHL7KmPGImyg==",
   "success": true,
   "projectFilePath": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Camilo\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
+    "C:\\Users\\Camilo\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
     "C:\\Users\\Camilo\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Camilo\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.5\\microsoft.aspnetcore.authentication.jwtbearer.7.0.5.nupkg.sha512",
     "C:\\Users\\Camilo\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.4\\microsoft.aspnetcore.openapi.7.0.4.nupkg.sha512",

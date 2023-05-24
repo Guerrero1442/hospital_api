@@ -3,7 +3,6 @@ using backend.Models;
 
 public interface IUsuarioRepository : IGenericRepository<Usuario>
 {
-	Task<bool> nombreUsuarioExistente(string nombreUsuario);
 
 	Task<bool> emailExistente(string email);
 
@@ -28,19 +27,10 @@ public class UsuarioRepository : GenericRepository<Usuario>, IUsuarioRepository
 		return false;
 	}
 
-	public async Task<bool> nombreUsuarioExistente(string nombreUsuario)
-	{
-		var usuario = await Task.Run(() => _context.Usuarios.FirstOrDefault(x => x.NombreUsuario == nombreUsuario));
-		if (usuario != null)
-		{
-			return true;
-		}
-		return false;
-	}
 
 	public async Task<Usuario> Login(LoginDTO login)
 	{
-		var usuario = await Task.Run(() => _context.Usuarios.FirstOrDefault(x => x.NombreUsuario == login.NombreUsuario && x.Password == login.Password));
+		var usuario = await Task.Run(() => _context.Usuarios.FirstOrDefault(x => x.Email == login.Email && x.Password == login.Password));
 		if (usuario == null)
 		{
 			return null;

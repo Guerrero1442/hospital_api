@@ -1,4 +1,5 @@
 
+using System.ComponentModel;
 using backend.Models;
 
 public class Medico : ModelBase
@@ -21,15 +22,26 @@ public class Medico : ModelBase
 
 public enum Especialidad
 {
+	[Description("Cardiologia")]
 	Cardiologia,
+	[Description("Dermatologia")]
 	Dermatologia,
+	[Description("Gastroenterologia")]
 	Gastroenterologia,
+	[Description("Ginecologia")]
 	Ginecologia,
+	[Description("Neurologia")]
 	Neurologia,
+	[Description("Oftalmologia")]
 	Oftalmologia,
+	[Description("Oncologia")]
 	Oncologia,
+	[Description("Pediatria")]
 	Pediatria,
+	[Description("Psicologia")]
 	Psicologia,
+	[Description("Reumatologia")]
 	Reumatologia,
+	[Description("Urologia")]
 	Urologia
 }

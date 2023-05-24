@@ -27,7 +27,6 @@ public class HospitalContext : DbContext
 		modelBuilder.Entity<Usuario>(usuario =>
 		{
 			usuario.HasKey(p => p.Id);
-			usuario.Property(u => u.NombreUsuario).IsRequired();
 			usuario.Property(u => u.Email).IsRequired();
 			usuario.Property(u => u.Password).IsRequired();
 			usuario.Property(u => u.Rol).IsRequired();
@@ -71,10 +70,8 @@ public class HospitalContext : DbContext
 			cita.HasKey(c => c.Id);
 			cita.Property(c => c.Id).ValueGeneratedOnAdd();
 			cita.Property(c => c.Fecha).IsRequired();
-			cita.Property(c => c.Paciente).IsRequired().HasConversion(paciente => JsonConvert.SerializeObject(paciente),
-	json => JsonConvert.DeserializeObject<Paciente>(json));
-			cita.Property(c => c.Medico).IsRequired().HasConversion(medico => JsonConvert.SerializeObject(medico),
-	json => JsonConvert.DeserializeObject<Medico>(json));
+			cita.HasOne(c => c.Paciente).WithMany().IsRequired().HasForeignKey(c => c.PacienteId);
+			cita.HasOne(c => c.Medico).WithMany().IsRequired().HasForeignKey(c => c.MedicoId);
 			cita.Property(c => c.Especialidad).IsRequired();
 		});
 
@@ -84,10 +81,8 @@ public class HospitalContext : DbContext
 			pago.Property(p => p.Id).ValueGeneratedOnAdd();
 			pago.Property(p => p.FechaPago).IsRequired();
 			pago.Property(p => p.Monto).IsRequired();
-			pago.Property(p => p.Paciente).IsRequired().HasConversion(paciente => JsonConvert.SerializeObject(paciente),
-	json => JsonConvert.DeserializeObject<Paciente>(json)); ;
-			pago.Property(p => p.Cita).IsRequired().HasConversion(cita => JsonConvert.SerializeObject(cita),
-	json => JsonConvert.DeserializeObject<Cita>(json)); ;
+			pago.HasOne(p => p.Paciente).WithMany().IsRequired().HasForeignKey(p => p.PacienteId);
+			pago.HasOne(p => p.Cita).WithOne().IsRequired().HasForeignKey<Pago>(p => p.CitaId);
 		});
 
 	}

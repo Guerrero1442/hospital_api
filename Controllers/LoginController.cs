@@ -49,7 +49,7 @@ public class LoginController : ControllerBase
 	{
 		var claims = new List<Claim>
 		{
-			new Claim(ClaimTypes.Name, usuario.NombreUsuario),
+			new Claim(ClaimTypes.Dns, usuario.Email),
 			new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString())
 		};
 

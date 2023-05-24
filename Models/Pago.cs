@@ -10,7 +10,12 @@ public class Pago : ModelBase
 
 	public DateTime FechaPago { get; set; }
 
-	public Paciente Paciente { get; set; }
+	public int PacienteId { get; set; }
 
-	public Cita Cita { get; set; }
+	public int CitaId { get; set; }
+
+	// Navegación de propiedades
+	public virtual Paciente Paciente { get; set; }
+
+	public virtual Cita Cita { get; set; }
 }

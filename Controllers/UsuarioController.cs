@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers;
 
 [ApiController]
-[Authorize]
+// [Authorize]
 [Route("api/v1/[controller]")]
 public class UsuarioController : ControllerBase
 {
@@ -64,7 +64,7 @@ public class UsuarioController : ControllerBase
 		{
 			if (ModelState.IsValid)
 			{
-				_logger.LogInformation($"Insertando usuario {usuario.NombreUsuario}");
+				_logger.LogInformation($"Insertando usuario {usuario.Email}");
 				await _usuarioRepository.Insert(usuario);
 				return Ok();
 			}
@@ -117,21 +117,6 @@ public class UsuarioController : ControllerBase
 		catch (Exception ex)
 		{
 			_logger.LogError(ex.Message);
-			return StatusCode(500, ex.Message);
-		}
-	}
-
-	[HttpGet("nombreUsuarioExistente/{nombreUsuario}")]
-	public async Task<IActionResult> nombreUsuarioExistente(string nombreUsuario)
-	{
-		try
-		{
-			_logger.LogInformation($"Verificando si existe el nombre de usuario {nombreUsuario}");
-			return Ok(await _usuarioRepository.nombreUsuarioExistente(nombreUsuario));
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError($"Error al verificar si existe el nombre de usuario {nombreUsuario}");
 			return StatusCode(500, ex.Message);
 		}
 	}

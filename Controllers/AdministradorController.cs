@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers;
 
-[Authorize]
+// [Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class AdministradorController : GenericController<Administrador>
