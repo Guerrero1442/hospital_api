@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend\\backend.csproj": {}
+    "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend_citas\\backend.csproj": {}
   },
   "projects": {
-    "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend\\backend.csproj": {
+    "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend_citas\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend\\backend.csproj",
+        "projectUniqueName": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend_citas\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend\\backend.csproj",
+        "projectPath": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend_citas\\backend.csproj",
         "packagesPath": "C:\\Users\\Camilo\\.nuget\\packages\\",
-        "outputPath": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend\\obj\\",
+        "outputPath": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend_citas\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Camilo\\AppData\\Roaming\\NuGet\\NuGet.Config",

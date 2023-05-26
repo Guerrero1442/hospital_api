@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "C0mE4eac/U5v+AplrRa29rJoxQQhCgURLKHDOhM+kU0rpUQxmtIQZdOlIh4hLhzZffHBPA/fk4bHL7KmPGImyg==",
+  "dgSpecHash": "p2PwiMJc3fFhNGPIJWPjfLiIqXjXkDqYJP9uu/5RBoYyWb7Ip/HUcQFw9HkN2BZ2F28BeweEqhmqJ1p5KLrcXA==",
   "success": true,
-  "projectFilePath": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend\\backend.csproj",
+  "projectFilePath": "D:\\OneDrive\\Documents\\Universidad\\gestion_proyectos\\app_citas_medicas\\backend_citas\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Camilo\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\Camilo\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",

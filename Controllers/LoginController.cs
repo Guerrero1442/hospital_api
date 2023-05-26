@@ -4,6 +4,7 @@ using System.Text;
 using backend.dto;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 namespace backend.Controllers;
 
@@ -17,11 +18,15 @@ public class LoginController : ControllerBase
 
 	private readonly IConfiguration _config;
 
-	public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository, IConfiguration config)
+	private readonly HospitalContext _context;
+
+
+	public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository, IConfiguration config, HospitalContext context)
 	{
 		_logger = logger;
 		_usuarioRepository = usuarioRepository;
 		_config = config;
+		_context = context;
 	}
 
 	[HttpPost]
@@ -35,8 +40,22 @@ public class LoginController : ControllerBase
 				return NotFound("Usuário o contraseña no son validos");
 			}
 
+			// Recupera la información adicional en base al rol del usuario
+			object infoAdicional = null;
+			switch (usuario.Rol)
+			{
+				case Rol.Paciente:
+					infoAdicional = await _context.Pacientes.FirstOrDefaultAsync(p => p.UsuarioId == usuario.Id);
+					break;
+				case Rol.Medico:
+					infoAdicional = await _context.Medicos.FirstOrDefaultAsync(m => m.UsuarioId == usuario.Id);
+					break;
+				case Rol.Administrador:
+					infoAdicional = await _context.Administradores.FirstOrDefaultAsync(m => m.UsuarioId == usuario.Id);
+					break;
+			}
 			string JWT = GenerateToken(usuario);
-			return Ok(new { token = JWT });
+			return Ok(new { token = JWT, infoAdicional });
 		}
 		catch (Exception ex)
 		{
@@ -50,7 +69,8 @@ public class LoginController : ControllerBase
 		var claims = new List<Claim>
 		{
 			new Claim(ClaimTypes.Dns, usuario.Email),
-			new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString())
+			new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+			new Claim(ClaimTypes.Role, usuario.Rol.ToString())
 		};
 
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("JWT:Key").Value));

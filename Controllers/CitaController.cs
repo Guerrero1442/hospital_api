@@ -57,4 +57,25 @@ public class CitaController : GenericController<Cita>
 			return StatusCode(500, ex.Message);
 		}
 	}
+
+	[HttpGet("Paciente/{pacienteId}")]
+	public async Task<IActionResult> GetByPacienteId(int pacienteId)
+	{
+		try
+		{
+			_logger.LogInformation($"Listando citas para el paciente con id {pacienteId}");
+			var result = await _citaRepository.GetByPacienteId(pacienteId);
+			if (!result.Any())
+			{
+				_logger.LogError($"No se encontraron citas para el paciente con id {pacienteId}");
+				return NotFound();
+			}
+			return Ok(result);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex.Message);
+			return StatusCode(500, ex.Message);
+		}
+	}
 }
