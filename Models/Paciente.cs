@@ -7,7 +7,7 @@ public class Paciente : ModelBase
 
 	public string NombreCompleto { get; set; }
 
-	public int Telefono { get; set; }
+	public string Telefono { get; set; }
 
 	public List<string> Beneficiarios { get; set; }
 

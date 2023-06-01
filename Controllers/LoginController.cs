@@ -40,22 +40,8 @@ public class LoginController : ControllerBase
 				return NotFound("Usuário o contraseña no son validos");
 			}
 
-			// Recupera la información adicional en base al rol del usuario
-			object infoAdicional = null;
-			switch (usuario.Rol)
-			{
-				case Rol.Paciente:
-					infoAdicional = await _context.Pacientes.FirstOrDefaultAsync(p => p.UsuarioId == usuario.Id);
-					break;
-				case Rol.Medico:
-					infoAdicional = await _context.Medicos.FirstOrDefaultAsync(m => m.UsuarioId == usuario.Id);
-					break;
-				case Rol.Administrador:
-					infoAdicional = await _context.Administradores.FirstOrDefaultAsync(m => m.UsuarioId == usuario.Id);
-					break;
-			}
 			string JWT = GenerateToken(usuario);
-			return Ok(new { token = JWT, infoAdicional });
+			return Ok(new { token = JWT });
 		}
 		catch (Exception ex)
 		{
@@ -84,4 +70,86 @@ public class LoginController : ControllerBase
 
 		return token;
 	}
+
+	[HttpGet]
+	[Route("profile")]
+	public async Task<IActionResult> GetProfile()
+	{
+		try
+		{
+			// Intenta obtener el token del encabezado de autorización.
+			var authorizationHeader = this.Request.Headers["Authorization"].ToString();
+			if (string.IsNullOrEmpty(authorizationHeader))
+			{
+				return BadRequest("No authorization header provided.");
+			}
+
+			// Quita el prefijo "Bearer " del token.
+			var token = authorizationHeader.Replace("Bearer ", "");
+
+			// Configura las credenciales de validación con la misma clave que usaste para firmar el token.
+			var key = Encoding.UTF8.GetBytes(_config.GetSection("JWT:Key").Value);
+			var validationParameters = new TokenValidationParameters
+			{
+				ValidateIssuerSigningKey = true,
+				IssuerSigningKey = new SymmetricSecurityKey(key),
+				ValidateIssuer = false,
+				ValidateAudience = false,
+			};
+
+			// Lee y valida el token.
+			var handler = new JwtSecurityTokenHandler();
+			var jwt = handler.ReadJwtToken(token);
+
+			// Valida el token y obtén los claims.
+			handler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+			var claims = ((JwtSecurityToken)validatedToken).Claims;
+
+			// Extrae los datos del usuario del token.
+			var userIdClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Dns);
+			var userRolClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+			if (userIdClaim == null || userRolClaim == null)
+			{
+				return BadRequest("Invalid token");
+			}
+
+			var userEmail = userIdClaim.Value;
+			var userRol = userRolClaim.Value;
+
+			switch (userRol)
+			{
+				case "Paciente":
+					var paciente = await _context.Pacientes.FirstOrDefaultAsync(p => p.Usuario.Email == userEmail);
+					if (paciente != null)
+					{
+						return Ok(paciente);
+					}
+					break;
+				case "Medico":
+					var medico = await _context.Medicos.FirstOrDefaultAsync(m => m.Usuario.Email == userEmail);
+					if (medico != null)
+					{
+						return Ok(medico);
+					}
+					break;
+				case "Administrador":
+					var admin = await _context.Administradores.FirstOrDefaultAsync(a => a.Usuario.Email == userEmail);
+					if (admin != null)
+					{
+						return Ok(admin);
+					}
+					break;
+				default:
+					return BadRequest("Invalid user role");
+			}
+
+			return NotFound("User not found");
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error retrieving user profile");
+			return StatusCode(500, "Error retrieving user profile");
+		}
+	}
+
 }

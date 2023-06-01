@@ -35,10 +35,11 @@ public class HospitalContext : DbContext
 		modelBuilder.Entity<Paciente>(paciente =>
 		{
 			paciente.HasKey(p => p.Id);
+			paciente.Property(p => p.Id).ValueGeneratedOnAdd();
 			paciente.Property(p => p.DocumentoIdentificacion).IsRequired();
 			paciente.Property(p => p.NombreCompleto).IsRequired();
 			paciente.Property(p => p.Telefono).IsRequired();
-			paciente.Property(p => p.Beneficiarios).IsRequired().HasConversion(new StringListConverter());
+			paciente.Property(p => p.Beneficiarios).HasConversion(new StringListConverter());
 			paciente.HasOne(p => p.Usuario).WithOne().HasForeignKey<Paciente>(p => p.UsuarioId);
 		});
 

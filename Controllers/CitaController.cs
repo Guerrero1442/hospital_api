@@ -58,6 +58,50 @@ public class CitaController : GenericController<Cita>
 		}
 	}
 
+	[HttpPut("FromDto/{id}")]
+	public async Task<IActionResult> UpdateFromDto(int id, [FromBody] CrearCitaDTO dto)
+	{
+		// Validar el modelo
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		// Buscar la cita existente en la base de datos
+		var existingCita = await _citaRepository.GetById(x => x.Id == id);
+
+		// Comprobar si la cita existe
+		if (existingCita == null)
+		{
+			return NotFound("La cita no existe");
+		}
+
+		// Buscar el médico y el paciente en la base de datos usando los ids proporcionados
+		var medico = await _medicoRepository.GetById(x => x.Id == dto.MedicoId);
+		var paciente = await _pacienteRepository.GetById(x => x.Id == dto.PacienteId);
+
+		// Comprobar si el médico y el paciente existen
+		if (medico == null || paciente == null)
+		{
+			return BadRequest("El médico y/o el paciente no existen");
+		}
+
+		// Actualizar la cita
+		_mapper.Map(dto, existingCita);
+
+		// Guardar los cambios en la base de datos
+		try
+		{
+			await _citaRepository.Update(existingCita);
+			return Ok(existingCita);
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, ex.Message);
+		}
+	}
+
+
 	[HttpGet("Paciente/{pacienteId}")]
 	public async Task<IActionResult> GetByPacienteId(int pacienteId)
 	{
@@ -67,8 +111,8 @@ public class CitaController : GenericController<Cita>
 			var result = await _citaRepository.GetByPacienteId(pacienteId);
 			if (!result.Any())
 			{
-				_logger.LogError($"No se encontraron citas para el paciente con id {pacienteId}");
-				return NotFound();
+				_logger.LogInformation($"No se encontraron citas para el paciente con id {pacienteId}");
+				return Ok(new { message = "No se encontraron citas para el paciente con id " + pacienteId });
 			}
 			return Ok(result);
 		}

@@ -9,7 +9,7 @@ public class Medico : ModelBase
 
 	public string NombreCompleto { get; set; }
 
-	public int Telefono { get; set; }
+	public string Telefono { get; set; }
 
 	public Especialidad Especialidad { get; set; }
 
